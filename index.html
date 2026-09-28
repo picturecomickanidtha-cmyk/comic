@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Comic Library — คลังการ์ตูนออนไลน์</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+:root{--bg:#f6f4ef;--surface:#fff;--ink:#16213a;--muted:#68718a;--brand:#1f3a68;--accent:#e8892b;--purple:#1f3a68;--pink:#e8892b;--red:#c9433a;--line:#e4dfd3}
+html{scroll-behavior:smooth}body{margin:0;font-family:"Noto Sans Thai",sans-serif;background:var(--bg);color:var(--ink);line-height:1.55}
+button,input,select{font:inherit}button{cursor:pointer;border:0}.hidden{display:none!important}a{color:inherit;text-decoration:none}
+.site{position:sticky;top:0;z-index:50;background:#fffffff2;backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.bar{max-width:1180px;margin:auto;height:64px;display:flex;align-items:center;gap:28px;padding:0 20px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:19px;color:var(--brand)}.mark{width:34px;height:34px;border-radius:9px;background:var(--brand);color:#fff;display:grid;place-items:center;font-size:18px}
+.links{display:flex;gap:6px;flex:1}.links a{padding:8px 14px;border-radius:8px;font-weight:600;color:var(--muted)}.links a:hover,.links a.on{color:var(--brand);background:#eef1f7}
+.hero{background:var(--brand);color:#fff;padding:64px 20px 72px;text-align:center;background-image:radial-gradient(circle at 85% 20%,#e8892b40,transparent 40%),radial-gradient(circle at 10% 90%,#ffffff18,transparent 40%)}
+.heroin{max-width:680px;margin:auto}.eyebrow{color:#ffc98f;font-weight:700;letter-spacing:.5px;margin:0 0 8px}.hero h1{font-size:clamp(28px,5vw,44px);line-height:1.25;margin:0 0 12px}.hero p{margin:0 0 24px;opacity:.9}
+.search{width:100%;max-width:460px;padding:14px 20px;border-radius:999px;border:0;font-size:16px;outline:0;box-shadow:0 8px 24px #0004}
+.wrap{max-width:1180px;margin:auto;padding:40px 20px 60px}.narrow{max-width:440px;margin:auto;padding:50px 20px}
+.sechead{display:flex;align-items:baseline;justify-content:space-between;border-bottom:2px solid var(--ink);padding-bottom:10px;margin-bottom:24px}.sechead h2{margin:0;font-size:24px}
+.toolbar{display:flex;gap:10px;align-items:center;justify-content:space-between;margin-bottom:20px}.toolbar h1{margin:0}
+.grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:22px}
+.card{transition:.2s}.card:hover{transform:translateY(-4px)}
+.cover{display:block;position:relative;aspect-ratio:3/4;border-radius:10px;overflow:hidden;background:#e6e1d6;box-shadow:0 6px 18px #16213a26}.cover img{width:100%;height:100%;object-fit:cover;display:block}
+.ph{display:grid;place-items:center;height:100%;font-size:48px}.badge{position:absolute;left:8px;bottom:8px;background:#16213ad9;color:#fff;font-size:12px;padding:3px 10px;border-radius:999px}
+.cbody{padding:12px 2px}.cbody h3{margin:0 0 8px;font-size:16px;line-height:1.35}
+.crumb{display:inline-block;color:var(--muted);font-weight:600;margin-bottom:18px}.crumb:hover{color:var(--brand)}
+.detail{display:grid;grid-template-columns:260px 1fr;gap:36px;align-items:start}.detail h1{margin:0 0 4px;font-size:32px}.dcover{border-radius:12px;overflow:hidden;aspect-ratio:3/4;background:#e6e1d6;box-shadow:0 10px 30px #16213a33}.dcover img{width:100%;height:100%;object-fit:cover}
+.btn{padding:9px 16px;border-radius:8px;background:#eceff6;color:#1f2a44;font-weight:700;transition:.15s;display:inline-block}.btn:hover{filter:brightness(.96)}
+.btn.primary{background:var(--brand);color:#fff}.btn.dark{background:var(--ink);color:#fff}.btn.danger{background:#fbe6e4;color:var(--red)}.btn.small{padding:7px 13px;font-size:14px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:20px;margin-bottom:16px}.loginCard h1{margin:0 0 4px;font-size:24px}.err{color:var(--red);margin:12px 0 0}
+.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.full{grid-column:1/-1}.field label{display:block;font-weight:700;font-size:14px;margin:12px 0 5px}.field input{width:100%;padding:11px 13px;border:1px solid #cfc9bb;border-radius:8px;background:#fff}.field input:focus{outline:2px solid var(--accent);border-color:var(--accent)}
+.row{display:flex;gap:16px;align-items:center}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.meta{color:var(--muted);font-size:14px}.empty{text-align:center;padding:60px 20px;color:var(--muted);font-size:18px}
+.coverPreview{width:90px;height:120px;flex:none;border-radius:8px;overflow:hidden;background:#e6e1d6;display:grid;place-items:center;font-size:32px}.coverPreview img{width:100%;height:100%;object-fit:cover}
+.chapterList{display:flex;flex-direction:column;gap:8px}.chapter{display:flex;justify-content:space-between;align-items:center;gap:12px;background:#fff;border:1px solid var(--line);padding:12px 16px;border-radius:10px}.chapter:hover{border-color:var(--accent)}.chapter .name{font-weight:700}
+.site-foot{text-align:center;padding:28px;color:var(--muted);font-size:14px;border-top:1px solid var(--line)}
+
+.reader{background:#151326;min-height:100vh;color:white;position:relative;overflow:hidden;width:100%;height:100%;} .reader:fullscreen{width:100vw;height:100vh;background:#151326;}
+.readerbar{position:fixed;bottom:0;left:0;right:0;z-index:100;background:linear-gradient(100deg,#1c1733,#341d57);padding:10px 16px;display:flex;gap:9px;align-items:center;flex-wrap:wrap;box-shadow:0 -5px 25px rgba(0,0,0,.5);border-top:1px solid rgba(255,255,255,.1);transition:transform 0.3s ease;}
+.readerbar.hidden-bar{transform:translateY(100%);pointer-events:none;}
+.readerbar select,.readerbar input{padding:7px;border-radius:8px;border:0;background:#2b2342;color:#fff}
+.readerbar select option{background:#1c1733;color:#fff}
+.readerbar .spacer{flex:1}
+
+.readerbook{position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px 82px;overflow:auto}
+.zoomControls{display:flex;align-items:center;gap:4px}
+.zoomControls button{width:34px;height:34px;border-radius:9px;background:#2b2342;color:#fff;font-size:16px;font-weight:800;display:grid;place-items:center}
+.zoomControls button:hover{background:#3a2f57}
+.zoomControls .zlabel{min-width:46px;text-align:center;font-size:12px;opacity:.85}
+.pageNav{position:fixed;top:50%;transform:translateY(-50%);z-index:120;width:58px;height:120px;border-radius:18px;border:1px solid rgba(255,255,255,.2);background:rgba(28,23,51,.82);color:#fff;font-size:48px;line-height:1;display:grid;place-items:center;box-shadow:0 8px 28px #0008;backdrop-filter:blur(5px);transition:.18s ease;cursor:pointer}
+.pageNav:hover{transform:translateY(-50%) scale(1.06);background:rgba(70,45,100,.95)}
+.pageNav.prev{left:14px}.pageNav.next{right:14px}
+.pdfstage{display:flex;justify-content:center;gap:0;padding:10px;min-height:calc(100vh - 40px);align-items:center;perspective:1800px;transform-origin:center center;transition:transform .12s ease-out;touch-action:pan-x pan-y}
+.pdfstage.zooming{transition:none}.pdfstage.double{gap:0}.pdfstage.double .pagewrap{border-radius:0;box-shadow:none}.pdfstage.double .pagewrap:first-child{box-shadow:-10px 12px 35px #0006}.pdfstage.double .pagewrap:last-child{box-shadow:10px 12px 35px #0006}.pdfstage.double .pagewrap:first-child canvas{border-right:1px solid #ddd}.pdfstage.double .pagewrap:last-child canvas{border-left:1px solid #ddd}
+.pagewrap{background:#fff;box-shadow:0 12px 40px #0009;position:relative;overflow:hidden;transform-style:preserve-3d;transition:transform 0.35s cubic-bezier(0.4,0,0.2,1), opacity 0.35s ease;backface-visibility:hidden}.pagewrap.spread-left{transform-origin:right center}.pagewrap.spread-right{transform-origin:left center}.pdfstage.turning-next .spread-right{transform:rotateY(-78deg);opacity:.05;z-index:5}.pdfstage.turning-next .spread-left{transform:translateX(-2px);opacity:.7}.pdfstage.turning-prev .spread-left{transform:rotateY(78deg);opacity:.05;z-index:5}.pdfstage.turning-prev .spread-right{transform:translateX(2px);opacity:.7}
+.pagewrap canvas{display:block;max-width:calc(50vw - 20px);max-height:95vh;width:auto;height:auto}
+.single .pagewrap canvas{max-width:min(95vw, 900px);max-height:95vh}
+.device-fold .pagewrap canvas{max-width:calc(48vw - 10px);max-height:92vh}
+.device-fold.single .pagewrap canvas{max-width:min(98vw, 650px);max-height:92vh}
+
+.readerHint{position:fixed;bottom:15px;left:50%;transform:translateX(-50%);background:#000a;padding:5px 14px;border-radius:20px;font-size:12px;z-index:90;pointer-events:none;transition:opacity 0.3s;}
+.modal{position:fixed;inset:0;background:#16213a99;backdrop-filter:blur(3px);display:grid;place-items:center;padding:20px;z-index:200}.modalbox{background:#fff;border-radius:14px;padding:24px;width:min(560px,100%);max-height:90vh;overflow:auto;box-shadow:0 24px 60px #0005}.modalhead{display:flex;justify-content:space-between;align-items:center}.modalhead h2{margin:0;font-size:20px}.close{width:34px;height:34px;border-radius:50%;background:#eceff6;font-size:20px}
+.coverNote{font-size:12px;color:#77809a;margin-top:5px}.saving{opacity:.65;pointer-events:none}
+.progressOverlay{position:fixed;inset:0;background:#1c1733e6;backdrop-filter:blur(2px);display:grid;place-items:center;z-index:300;color:#fff}
+.progressBox{width:min(360px,88vw);text-align:center;background:#251d3f;border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:26px 22px;box-shadow:0 20px 55px #0007}
+.progressPct{font-size:32px;font-weight:800;background:linear-gradient(135deg,var(--purple),var(--pink));-webkit-background-clip:text;background-clip:text;color:transparent}
+.progressBarTrack{width:100%;height:12px;background:#150f28;border-radius:8px;overflow:hidden;margin:14px 0;border:1px solid rgba(255,255,255,.08)}
+.progressBarFill{height:100%;background:linear-gradient(90deg,var(--purple),var(--pink));transition:width .18s ease;border-radius:8px}
+.progressLabel{font-size:13px;opacity:.85;line-height:1.5;word-break:break-word}
+@media(max-width:1000px){.grid{grid-template-columns:repeat(4,1fr)}}
+@media(max-width:800px){.grid{grid-template-columns:repeat(3,1fr)}.formgrid{grid-template-columns:1fr}.detail{grid-template-columns:1fr}.dcover{max-width:220px}}
+@media(max-width:560px){.grid{grid-template-columns:repeat(2,1fr);gap:14px}.bar{gap:10px;padding:0 12px}.logo{font-size:16px}.hero{padding:44px 16px 52px}}
+
+/* ===== ธีมสีสดใส + ไอคอนตกแต่ง ===== */
+:root{--brand:#7c3aed;--accent:#ff5c8a;--purple:#7c3aed;--pink:#ff5c8a;--line:#ffd9a8}
+body{background:linear-gradient(135deg,#fff3e0 0%,#ffe9f3 40%,#e8f4ff 75%,#eafff3 100%) fixed}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.35;background-image:radial-gradient(#ff9ec4 1.5px,transparent 1.5px),radial-gradient(#7fd1ff 1.5px,transparent 1.5px);background-size:34px 34px,52px 52px;background-position:0 0,17px 22px}
+.site{background:linear-gradient(100deg,#7c3aed,#ec4899 55%,#ff9f1c);border-bottom:0;box-shadow:0 4px 18px #7c3aed55}
+.logo{color:#fff}.mark{background:#fff;font-size:20px;box-shadow:0 3px 0 #0003;transform:rotate(-6deg)}
+.links a{color:#ffffffd9}.links a:hover,.links a.on{background:#ffffff33;color:#fff}
+.site .btn{background:#fff;color:#7c3aed}.site .btn.dark{background:#16213a;color:#fff}
+.hero{position:relative;overflow:hidden;background:linear-gradient(120deg,#7c3aed,#d946ef 45%,#ff7a45)}
+.fl{position:absolute;font-size:36px;animation:flt 5s ease-in-out infinite;user-select:none}
+.f1{left:7%;top:18%}.f2{right:9%;top:16%;animation-delay:.8s}.f3{left:15%;bottom:12%;animation-delay:1.6s}.f4{right:17%;bottom:10%;animation-delay:2.2s}.f5{left:47%;top:7%;font-size:26px;animation-delay:1s}.f6{right:32%;bottom:8%;font-size:28px;animation-delay:.3s}
+@keyframes flt{50%{transform:translateY(-14px) rotate(10deg)}}
+.eyebrow{background:#ffffff2b;display:inline-block;padding:4px 16px;border-radius:999px}
+.search{border:3px solid #ffd166}
+.sechead{border-bottom:3px dashed #ff9ec4}
+.card .cover{border:4px solid var(--c,#ff5c8a);border-radius:18px;box-shadow:0 7px 0 var(--c,#ff5c8a),0 14px 24px #0002}
+.card:nth-child(5n+1){--c:#ff5c8a}.card:nth-child(5n+2){--c:#3aa0ff}.card:nth-child(5n+3){--c:#2ecc71}.card:nth-child(5n+4){--c:#ffb703}.card:nth-child(5n+5){--c:#a855f7}
+.card:hover .cover{transform:rotate(-1.5deg)}.badge{background:var(--c,#ff5c8a)}
+.cbody h3:before{content:"⭐ ";font-size:13px}
+.btn.primary{background:linear-gradient(135deg,#7c3aed,#ec4899);box-shadow:0 3px 0 #5b21b6}.btn.primary:active{transform:translateY(2px);box-shadow:none}
+.btn.danger{background:#ffe1e6}.panel,.chapter{border:2px solid #ffd9a8;border-radius:16px}.chapter:hover{border-color:#ec4899;transform:translateX(4px)}
+.dcover{border:5px solid #ff5c8a;box-shadow:0 9px 0 #ff5c8a,0 16px 30px #0003}.detail h1{color:#7c3aed}
+.site-foot{background:linear-gradient(90deg,#ffe4ef,#fff3c4,#dff3ff);border-top:0}
+#handCursor{position:fixed;left:0;top:0;z-index:400;pointer-events:none;font-size:40px;transform:translate(-50%,-50%);display:none;filter:drop-shadow(0 3px 4px #0008)}
+.pdfstage.pannable,.pdfstage.pannable *{cursor:none!important}
+#handHint{position:fixed;left:50%;top:44%;transform:translate(-50%,-50%);z-index:350;pointer-events:none;text-align:center;color:#fff;background:#000b;padding:16px 24px;border-radius:22px;font-size:15px;animation:hfade 3.2s forwards}
+#handHint .h{font-size:58px;display:block;animation:wave 1s ease-in-out infinite}
+@keyframes hfade{0%,70%{opacity:1}100%{opacity:0}}@keyframes wave{50%{transform:translateX(18px) rotate(14deg)}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<!-- PDF.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs" type="module"></script>
+<!-- tus-js-client: ใช้สำหรับอัปโหลดไฟล์แบบ resumable พร้อมแสดงเปอร์เซ็นต์ความคืบหน้า -->
+<script src="https://cdn.jsdelivr.net/npm/tus-js-client@4/dist/tus.min.js"></script>
+<script type="module">
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+const pdfjsReady = import("https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs");
+
+const SUPABASE_URL = "https://dtcxzfkjqovvukpedsdg.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_Ab9gUfamFZZBuAHNrIi30Q_VAXzCS31";
+const configured = !SUPABASE_URL.startsWith("YOUR_") && !SUPABASE_ANON_KEY.startsWith("YOUR_");
+const supabase = configured ? createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+
+const state={
+  user:null, admin:false, books:[], selectedBook:null, reader:null,
+  view:"read", currentPage:1, bookmarks:{}, pdf:null, booksChannel:null,
+  deviceMode: "pc", flipAnim: "turn", touchStartX: 0, touchStartY: 0,
+  barVisible: true, cachedPages: {},
+  zoom: 1, minZoom: 0.5, maxZoom: 3,
+  pinchActive:false, pinchStartDist:0, pinchStartZoom:1,
+  panX:0, panY:0, panStartX:0, panStartY:0, panOriginX:0, panOriginY:0,
+  soundOn: true
+};
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;", "'":"&#039;"}[m]));
+// สร้างชื่อไฟล์ที่ปลอดภัยสำหรับใช้เป็น "key" บน Supabase Storage
+// Supabase Storage ไม่รองรับตัวอักษรที่ไม่ใช่ ASCII (เช่น ภาษาไทย) ใน path จึงต้องตัดออกให้เหลือแต่ a-z, 0-9, _, - เท่านั้น
+// (ชื่อไฟล์/ชื่อตอนภาษาไทยที่ผู้ใช้เห็น ถูกเก็บแยกไว้ในฟิลด์ name/fileName ในฐานข้อมูล ไม่ได้อิงจากตัวนี้)
+const safeName=s=>{
+  const str=String(s||"file");
+  const m=str.match(/^(.*?)(\.[A-Za-z0-9]+)?$/s);
+  let base=m?m[1]:str, ext=(m&&m[2]?m[2]:"").toLowerCase();
+  base=base.replace(/[^\w-]+/g,"_").replace(/_+/g,"_").replace(/^_+|_+$/g,"");
+  if(!base)base="file";
+  return base+ext;
+};
+const publicUrl=(bucket,path)=>supabase.storage.from(bucket).getPublicUrl(path).data.publicUrl;
+
+const PAGE_TURN_SOUND_B64="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ZujQZiycaRISaBrsYYOStswBCgEgMlWsz///MfyGNVZYMveZNz1gMREyN+xeM0yRMEAjFAGMDhTMKBRMFAKCgkmCwZ////+bIBMbgpkZUkYZ7wwbUvma6hcbiCEcmnYbDo0YBAQMBeYFA2WAEMH/8+LE1XUDwgABnugAQWzCgSwADhgEMpgcEP/////5sA2piMT5tzQhn2vJvQyJg+Ohk6iBs+1RgeF5l4cZiAZxiEAZkmbxABwMD9SlwG5wUoMKADViqlSlT3f///////+ZqmYQkQaSo0Y+gWYQFiZYCYZogcZdoIY/geKmMYaC8aapYYUoyY7kcYOhGYUCYvJlT4wIXtU6FANVVY6FQARuZukKmis1AV//////////5icIZhCEBgEGhjsXZj4LJicHxjoT5jISpnsfphwKJhQIZjwK4KCgx3K4yjIwwpH4xjFky0AEx2EEyBHgwMClcz4ocmtOCKgIrdAabztRFQ6GrcBNaZSIQKL3NbQ+TEFNRTMuMTAwVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV//PgxAAAAANIAcAAAExBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV";
+let _pageTurnAudio=null;
+function playPageTurnSound(){
+  if(!state.soundOn)return;
+  try{
+    if(!_pageTurnAudio){
+      _pageTurnAudio=new Audio("data:audio/mpeg;base64,"+PAGE_TURN_SOUND_B64);
+      _pageTurnAudio.volume=0.55;
+    }
+    const a=_pageTurnAudio.cloneNode();
+    a.volume=0.55;
+    a.play().catch(()=>{});
+  }catch(e){console.warn("page turn sound error",e)}
+}
+
+// ===== แถบแสดงเปอร์เซ็นต์ความคืบหน้า (ใช้ทั้งตอนอัปโหลดและตอนเปิดอ่าน) =====
+function showProgressOverlay(label){
+  if($("#progressOverlay"))return updateProgressOverlay(0,label);
+  const el=document.createElement("div");
+  el.className="progressOverlay";
+  el.id="progressOverlay";
+  el.innerHTML=`<div class="progressBox">
+    <div class="progressPct" id="progressPct">0%</div>
+    <div class="progressBarTrack"><div class="progressBarFill" id="progressBarFill" style="width:0%"></div></div>
+    <div class="progressLabel" id="progressLabelText">${esc(label||"กำลังเตรียมข้อมูล...")}</div>
+  </div>`;
+  document.body.appendChild(el);
+}
+function updateProgressOverlay(pct,label){
+  const p=$("#progressPct"),f=$("#progressBarFill"),l=$("#progressLabelText");
+  const clamped=Math.max(0,Math.min(100,pct||0));
+  if(p)p.textContent=Math.round(clamped)+"%";
+  if(f)f.style.width=clamped+"%";
+  if(l && label!==undefined)l.textContent=label;
+}
+function hideProgressOverlay(){
+  const el=$("#progressOverlay");
+  if(el)el.remove();
+}
+
+// โปรเจกต์ Supabase (ใช้สร้าง endpoint สำหรับอัปโหลดแบบ resumable/TUS)
+const SUPABASE_PROJECT_ID=(SUPABASE_URL.match(/^https:\/\/([^.]+)\.supabase\.co/)||[])[1]||"";
+const TUS_ENDPOINT=SUPABASE_PROJECT_ID?`https://${SUPABASE_PROJECT_ID}.storage.supabase.co/storage/v1/upload/resumable`:null;
+
+// อัปโหลดไฟล์แบบ resumable (TUS) พร้อมรายงานเปอร์เซ็นต์ความคืบหน้าจริงผ่าน onProgress
+// ใช้กับไฟล์ขนาดใหญ่อย่าง PDF การ์ตูนแต่ละตอน ทนต่อปัญหาเน็ตหลุด/ไฟล์ใหญ่ได้ดีกว่าอัปโหลดแบบปกติ
+async function uploadFileResumable(bucket,path,file,onProgress){
+  if(!window.tus?.Upload || !TUS_ENDPOINT){
+    // ถ้าโหลดไลบรารี TUS ไม่สำเร็จ (เช่นเน็ตหลุดตอนโหลดสคริปต์) ให้ย้อนกลับไปอัปโหลดแบบปกติแทน เพื่อไม่ให้ผู้ใช้อัปโหลดไม่ได้เลย
+    onProgress?.(0);
+    const {error}=await supabase.storage.from(bucket).upload(path,file,{contentType:file.type||"application/pdf",upsert:false});
+    if(error)throw error;
+    onProgress?.(100);
+    return;
+  }
+  const {data:{session}}=await supabase.auth.getSession();
+  await new Promise((resolve,reject)=>{
+    const upload=new window.tus.Upload(file,{
+      endpoint:TUS_ENDPOINT,
+      retryDelays:[0,3000,5000,10000,20000],
+      headers:{
+        authorization:`Bearer ${session?.access_token||""}`,
+        apikey:SUPABASE_ANON_KEY,
+        "x-upsert":"false"
+      },
+      uploadDataDuringCreation:true,
+      removeFingerprintOnSuccess:true,
+      metadata:{
+        bucketName:bucket,
+        objectName:path,
+        contentType:file.type||"application/pdf",
+        cacheControl:"3600"
+      },
+      chunkSize:6*1024*1024, // ต้องเป็น 6MB ตามข้อกำหนดของ Supabase
+      onError:err=>reject(err),
+      onProgress:(loaded,total)=>{ if(total)onProgress?.(loaded/total*100) },
+      onSuccess:()=>resolve()
+    });
+    upload.findPreviousUploads()
+      .then(prev=>{ if(prev.length)upload.resumeFromPreviousUpload(prev[0]); upload.start() })
+      .catch(()=>upload.start());
+  });
+}
+
+function friendlyError(e){
+  const msg=e?.message||String(e||"ไม่ทราบสาเหตุ");
+  if(/row-level security|permission denied/i.test(msg)) return "ไม่มีสิทธิ์ดำเนินการ กรุณาตรวจสอบ role ใน profiles และ RLS Policies";
+  if(/maximum size exceeded|413|payload too large/i.test(msg)) return "ไฟล์มีขนาดใหญ่เกินกว่าที่ Supabase Storage อนุญาต กรุณาไปที่ Dashboard > Storage > Settings แล้วเพิ่มค่า \"Global file size limit\" (และตรวจสอบขีดจำกัดของ bucket \"pdfs\" ด้วย) หมายเหตุ: แผน Free ตั้งได้สูงสุดแค่ 50MB เท่านั้น หากไฟล์ใหญ่กว่านี้ต้องอัปเกรดแผนหรือบีบอัดไฟล์ PDF ให้เล็กลง";
+  if(/bucket/i.test(msg)) return "ยังไม่มี Storage Bucket ที่กำหนดไว้ กรุณารัน supabase_setup.sql";
+  if(/invalid login credentials/i.test(msg)) return "อีเมลหรือรหัสผ่านไม่ถูกต้อง";
+  return msg;
+}
+
+function shell(content){
+  const v=state.view;
+  document.body.innerHTML=`<header class="site"><div class="bar">
+   <a class="logo" href="#" onclick="setView('read');return false"><span class="mark">📚</span>Comic Library</a>
+   <nav class="links">
+    <a href="#" class="${v==="read"?"on":""}" onclick="setView('read');return false">📖 ชั้นหนังสือ</a>
+    ${state.admin?`<a href="#" class="${v==="manage"?"on":""}" onclick="setView('manage');return false">⚙️ จัดการหนังสือ</a>`:""}
+   </nav>
+   ${!configured?"":state.user?`<button class="btn small" onclick="logout()">👋 ออกจากระบบ</button>`:`<button class="btn small dark" onclick="setView('login')">🔑 ผู้ดูแลเข้าสู่ระบบ</button>`}
+  </div></header>${content}<footer class="site-foot">🌈 © Comic Library · คลังการ์ตูนออนไลน์เพื่อการเรียนรู้ 🎉</footer>`;
+}
+window.setView=v=>{state.view=v;state.selectedBook=null;render()};
+window.logout=async()=>{if(supabase)await supabase.auth.signOut();state.view="read";render()};
+window.openBook=id=>{
+  const book=state.books.find(x=>String(x.id)===String(id));
+  if(!book){alert("ไม่พบหนังสือที่เลือก");return}
+  state.reader=null;
+  state.pdf=null;
+  state.cachedPages={};
+  state.selectedBook=book;
+  state.view="read";
+  render();
+};
+
+// ฟังก์ชันปิดหน้าต่างอ่านหนังสือและกลับสู่หน้าชั้นหนังสืออย่างถูกต้อง
+window.closeReader=()=>{
+  ++pdfLoadToken;
+  state.reader=null;
+  state.pdf=null;
+  state.cachedPages={};
+  state.currentPage=1;
+  state.view="read";
+  state.selectedBook=null;
+  render();
+};
+
+function loginPage(){
+  return `<main class="narrow"><div class="panel loginCard"><h1>🔑 เข้าสู่ระบบผู้ดูแล</h1><p class="meta">สำหรับผู้ดูแลเท่านั้น ผู้อ่านไม่ต้องเข้าสู่ระบบ</p>
+  <div class="field"><label>อีเมล</label><input id="email" type="email" autocomplete="email"></div>
+  <div class="field"><label>รหัสผ่าน</label><input id="pass" type="password" autocomplete="current-password" onkeydown="if(event.key==='Enter')login()"></div>
+  <button class="btn primary" style="width:100%;margin-top:16px" onclick="login()">เข้าสู่ระบบ</button><p id="loginMsg" class="err"></p></div></main>`;
+}
+window.login=async()=>{
+  if(!configured)return $("#loginMsg").textContent="กรุณาใส่ SUPABASE_URL และ SUPABASE_ANON_KEY ก่อน";
+  try{const {error}=await supabase.auth.signInWithPassword({email:$("#email").value.trim(),password:$("#pass").value});if(error)throw error}
+  catch(e){$("#loginMsg").textContent="เข้าสู่ระบบไม่สำเร็จ: "+friendlyError(e)}
+};
+window.filterBooks=q=>{q=q.trim().toLowerCase();document.querySelectorAll(".card[data-title]").forEach(c=>c.classList.toggle("hidden",!c.dataset.title.includes(q)))};
+
+function readPage(){
+  if(state.selectedBook)return bookPage(state.selectedBook);
+  const cards=state.books.map(b=>`<article class="card" data-title="${esc(String(b.title).toLowerCase())}">
+    <a class="cover" href="#" data-action="open-book" data-book-id="${esc(b.id)}">${b.cover_url?`<img loading="lazy" src="${esc(b.cover_url)}" alt="ปก ${esc(b.title)}">`:`<span class="ph">📕</span>`}<span class="badge">${b.chapter_count||b.chapters?.length||0} ตอน</span></a>
+    <div class="cbody"><h3>${esc(b.title)}</h3><button type="button" class="btn primary small" data-action="open-book" data-book-id="${esc(b.id)}">📖 เปิดอ่าน</button></div></article>`).join("");
+  return `<section class="hero"><span class="fl f1">✨</span><span class="fl f2">🚀</span><span class="fl f3">📚</span><span class="fl f4">⭐</span><span class="fl f5">🎈</span><span class="fl f6">🌈</span><div class="heroin"><p class="eyebrow">🎨 ห้องสมุดการ์ตูนออนไลน์</p><h1>อ่านการ์ตูนความรู้ ได้ทุกที่ ทุกเวลา 🎉</h1><p>เลือกเรื่องที่ชอบแล้วเปิดอ่านได้ทันที ไม่ต้องสมัครสมาชิก</p>
+  <input class="search" type="search" placeholder="🔍 ค้นหาชื่อเรื่อง..." oninput="filterBooks(this.value)"></div></section>
+  <main class="wrap"><div class="sechead"><h2>🌈 ชั้นหนังสือ</h2><span class="meta">${state.books.length} เรื่อง</span></div>
+  ${cards?`<div class="grid">${cards}</div>`:`<div class="empty">📚<br>ยังไม่มีหนังสือ</div>`}</main>`;
+}
+
+function bookPage(book){
+  const ch=(book.chapters||[]).map((c,i)=>`<div class="chapter"><div><div class="name">📘 ${i+1}. ${esc(c.name)}</div><div class="meta">${esc(c.fileName||"PDF")}</div></div><button type="button" class="btn primary small" data-action="start-reader" data-book-id="${esc(book.id)}" data-chapter-index="${i}">▶ อ่าน</button></div>`).join("");
+  return `<main class="wrap"><a href="#" class="crumb" data-action="back-library">← กลับชั้นหนังสือ</a>
+  <section class="detail"><div class="dcover">${book.cover_url?`<img src="${esc(book.cover_url)}" alt="ปก ${esc(book.title)}">`:`<span class="ph">📕</span>`}</div>
+  <div><h1>${esc(book.title)}</h1><p class="meta">${book.chapters?.length||0} ตอน</p><div class="chapterList">${ch||`<div class="empty">ยังไม่มีตอน</div>`}</div></div></section></main>`;
+}
+
+function managePage(){
+  return `<main class="wrap"><div class="toolbar"><h1>🎨 จัดการหนังสือ</h1><button class="btn primary" onclick="newBook()">＋ เพิ่มหนังสือ</button></div>
+  ${state.books.map(b=>`<div class="panel"><div class="row"><div class="coverPreview">${b.cover_url?`<img src="${esc(b.cover_url)}" alt="">`:"📕"}</div>
+  <div style="flex:1"><h2 style="margin:0">${esc(b.title)}</h2><div class="meta">${b.chapters?.length||0} ตอน</div>
+  <div class="actions"><button class="btn small" onclick="editBook('${b.id}')">แก้ไข</button><button class="btn small danger" onclick="removeBook('${b.id}')">ลบ</button><button class="btn primary small" onclick="manageChapters('${b.id}')">จัดการตอน / เพิ่ม PDF</button></div></div></div></div>`).join("")||`<div class="empty">ยังไม่มีหนังสือ</div>`}</main>`;
+}
+
+function render(){
+  if(state.reader){renderReader();return}
+  let c;
+  if(state.view==="login"&&!state.user)c=loginPage();
+  else if(state.view==="manage"&&state.admin)c=managePage();
+  else{state.view="read";c=readPage()}
+  shell(c);
+}
+window.render=render;
+
+// ใช้ event delegation สำหรับปุ่มที่ถูกสร้างใหม่ด้วย innerHTML
+document.addEventListener("click", async (e) => {
+  const btn = e.target.closest("[data-action]");
+  if (!btn) return;
+
+  const action = btn.dataset.action;
+
+  try {
+    if (action === "open-book") {
+      e.preventDefault();
+      window.openBook(btn.dataset.bookId);
+    } else if (action === "back-library") {
+      e.preventDefault();
+      state.selectedBook = null;
+      state.reader = null;
+      state.pdf = null;
+      state.cachedPages = {};
+      state.view = "read";
+      render();
+    } else if (action === "start-reader") {
+      e.preventDefault();
+      btn.disabled = true;
+      btn.style.opacity = ".65";
+      await window.startReader(btn.dataset.bookId, Number(btn.dataset.chapterIndex));
+    } else if (action === "close-reader") {
+      e.preventDefault();
+      window.closeReader();
+    }
+  } catch (err) {
+    console.error("button action error:", err);
+    alert("ไม่สามารถดำเนินการได้\n\n" + friendlyError(err));
+  } finally {
+    if (action === "start-reader") {
+      btn.disabled = false;
+      btn.style.opacity = "";
+    }
+  }
+});
+
+async function refreshBooks(){
+  if(!supabase)return;
+  const {data,error}=await supabase.from("books").select("*").order("created_at",{ascending:false});
+  if(error){console.error(error);alert("โหลดข้อมูลไม่สำเร็จ: "+friendlyError(error));return}
+  state.books=data||[];render();
+  if(state.booksChannel)supabase.removeChannel(state.booksChannel);
+  state.booksChannel=supabase.channel("books-live").on("postgres_changes",{event:"*",schema:"public",table:"books"},()=>refreshBooks()).subscribe();
+}
+async function getAdmin(user){
+  if(!user||!supabase)return false;
+  const {data,error}=await supabase.from("profiles").select("role").eq("id",user.id).maybeSingle();
+  if(error){console.warn("profile role:",error);return false}
+  return data?.role==="admin";
+}
+window.newBook=()=>bookModal();
+window.editBook=id=>bookModal(state.books.find(x=>x.id===id));
+
+function bookModal(book=null){
+ const editing=!!book,modal=document.createElement("div");modal.className="modal";modal.id="modal";
+ modal.innerHTML=`<div class="modalbox"><div class="modalhead"><h2>${editing?"✏️ แก้ไขหนังสือ":"✨ เพิ่มหนังสือใหม่"}</h2><button class="close" onclick="$('#modal').remove()">×</button></div>
+ <br><div class="formgrid"><div class="field full"><label>ชื่อเรื่อง</label><input id="bookTitle" value="${esc(book?.title||"")}" placeholder="เช่น การ์ตูนความรู้ดิจิทัล"></div>
+ <div class="field"><label>จำนวนตอน</label><input id="bookCount" type="number" min="0" value="${book?.chapter_count||book?.chapters?.length||0}"></div>
+ <div class="field"><label>หน้าปก ${editing?"(เลือกใหม่ได้)":""}</label><input id="cover" type="file" accept="image/png,image/jpeg,image/webp"><div class="coverNote">JPG / PNG / WebP ไม่เกิน 5 MB</div></div></div><br>
+ <div class="row"><div id="coverPreview" class="coverPreview">${book?.cover_url?`<img src="${esc(book.cover_url)}" alt="">`:"📚"}</div><span id="coverStatus" class="meta">เลือกภาพเพื่อดูตัวอย่างก่อนบันทึก</span></div>
+ <br><button id="saveBookBtn" class="btn primary" onclick="saveBook('${book?.id||""}')">💾 บันทึกข้อมูล</button></div>`;
+ document.body.appendChild(modal);
+ $("#cover").addEventListener("change",e=>{const f=e.target.files?.[0];if(!f)return;if(f.size>5*1024*1024){alert("ไฟล์หน้าปกใหญ่เกิน 5 MB");e.target.value="";return}if(!/^image\/(png|jpe?g|webp)$/i.test(f.type)){alert("กรุณาเลือก JPG, PNG หรือ WebP");e.target.value="";return}const url=URL.createObjectURL(f);$("#coverPreview").innerHTML=`<img src="${url}" alt="ตัวอย่างหน้าปก">`;$("#coverStatus").textContent=`เลือกแล้ว: ${f.name}`});
+}
+window.saveBook=async id=>{
+ const btn=$("#saveBookBtn"),title=$("#bookTitle").value.trim();
+ if(!title)return alert("กรุณาระบุชื่อเรื่อง");
+ if(!configured)return alert("ยังไม่ได้เชื่อม Supabase กรุณาใส่ SUPABASE_URL และ SUPABASE_ANON_KEY ใน index.html");
+ if(!state.user)return alert("กรุณาเข้าสู่ระบบก่อน");
+ if(!state.admin)return alert("บัญชีนี้ยังไม่มีสิทธิ์ admin ในตาราง profiles");
+ const b=state.books.find(x=>x.id===id),file=$("#cover").files?.[0];let coverUrl=b?.cover_url||"";
+ try{
+   btn.classList.add("saving");btn.textContent="⏳ กำลังบันทึก...";
+   if(file){
+     if(file.size>5*1024*1024)throw new Error("ไฟล์หน้าปกใหญ่เกิน 5 MB");
+     if(!/^image\/(png|jpe?g|webp)$/i.test(file.type))throw new Error("กรุณาเลือก JPG, PNG หรือ WebP");
+     const path=`${state.user.id}/${crypto.randomUUID()}_${safeName(file.name)}`;
+     const {error:upErr}=await supabase.storage.from("covers").upload(path,file,{contentType:file.type,upsert:false});
+     if(upErr)throw upErr;
+     coverUrl=publicUrl("covers",path);
+   }
+   const data={title,chapter_count:Number($("#bookCount").value||0),cover_url:coverUrl,updated_at:new Date().toISOString()};
+   let error;
+   if(id){({error}=await supabase.from("books").update(data).eq("id",id))}
+   else {({error}=await supabase.from("books").insert({...data,chapters:[],created_by:state.user.id}))}
+   if(error)throw error;
+   $("#modal").remove();await refreshBooks();
+ }catch(e){console.error("saveBook:",e);alert("บันทึกไม่สำเร็จ\n\n"+friendlyError(e))}
+ finally{if(btn){btn.classList.remove("saving");btn.textContent="💾 บันทึกข้อมูล"}}
+};
+window.removeBook=async id=>{
+ if(!confirm("ลบหนังสือและรายการตอนของเรื่องนี้หรือไม่?"))return;
+ const {error}=await supabase.from("books").delete().eq("id",id);
+ if(error)return alert("ลบไม่สำเร็จ: "+friendlyError(error));
+ await refreshBooks();
+};
+window.manageChapters=id=>{
+ const b=state.books.find(x=>x.id===id),modal=document.createElement("div");modal.className="modal";modal.id="modal";
+ modal.innerHTML=`<div class="modalbox"><div class="modalhead"><h2>📄 ตอนของ ${esc(b.title)}</h2><button class="close" onclick="$('#modal').remove()">×</button></div>
+ <p class="meta">เลือก PDF หลายไฟล์ได้ ระบบจะสร้างรายการตอนจากชื่อไฟล์</p><input id="pdfFiles" type="file" accept="application/pdf" multiple><br><br>
+ <div class="chapterList">${(b.chapters||[]).map((c,i)=>`<div class="chapter"><div><div class="name">${i+1}.${esc(c.name)}</div><div class="meta">${esc(c.fileName||"")}</div></div><button class="btn danger small" onclick="deleteChapter('${id}',${i})">ลบ</button></div>`).join("")||`<div class="meta">ยังไม่มีตอน</div>`}</div>
+ <br><button class="btn primary" onclick="uploadChapters('${id}')">☁️ อัปโหลด PDF ที่เลือก</button></div>`;document.body.appendChild(modal);
+};
+window.uploadChapters=async id=>{
+ const files=[...$("#pdfFiles").files];if(!files.length)return alert("กรุณาเลือกไฟล์ PDF");
+ const b=state.books.find(x=>x.id===id);let chapters=[...(b.chapters||[])];
+ showProgressOverlay(`กำลังอัปโหลดไฟล์ 1/${files.length}...`);
+ try{
+   for(let i=0;i<files.length;i++){
+     const file=files[i];
+     if(file.type!=="application/pdf")throw new Error(`${file.name} ไม่ใช่ PDF`);
+     const path=`${state.user.id}/${id}/${crypto.randomUUID()}_${safeName(file.name)}`;
+     updateProgressOverlay((i/files.length)*100, `กำลังอัปโหลดไฟล์ ${i+1}/${files.length}: ${file.name}`);
+     await uploadFileResumable("pdfs",path,file,pct=>{
+       const overall=((i+pct/100)/files.length)*100;
+       updateProgressOverlay(overall, `กำลังอัปโหลดไฟล์ ${i+1}/${files.length}: ${file.name} (${Math.round(pct)}%)`);
+     });
+     chapters.push({name:file.name.replace(/\.pdf$/i,""),fileName:file.name,url:publicUrl("pdfs",path),path,createdAt:Date.now()});
+   }
+   updateProgressOverlay(100,"กำลังบันทึกข้อมูลตอน...");
+   const {error}=await supabase.from("books").update({chapters,chapter_count:chapters.length,updated_at:new Date().toISOString()}).eq("id",id);if(error)throw error;
+   hideProgressOverlay();
+   $("#modal").remove();await refreshBooks();
+ }catch(e){
+   hideProgressOverlay();
+   alert("อัปโหลด PDF ไม่สำเร็จ\n\n"+friendlyError(e));
+ }
+};
+window.deleteChapter=async(id,index)=>{
+ const b=state.books.find(x=>x.id===id),chapters=[...(b.chapters||[])],removed=chapters.splice(index,1)[0];
+ if(removed?.path)await supabase.storage.from("pdfs").remove([removed.path]);
+ const {error}=await supabase.from("books").update({chapters,chapter_count:chapters.length,updated_at:new Date().toISOString()}).eq("id",id);
+ if(error)return alert("ลบตอนยังไม่สำเร็จ: "+friendlyError(error));
+ await refreshBooks();manageChapters(id);
+};
+
+let pdfLoadToken=0;
+
+window.startReader=async(bookId,index)=>{
+  const b=state.books.find(x=>String(x.id)===String(bookId));
+  const c=b?.chapters?.[index];
+
+  if(!b){alert("ไม่พบหนังสือที่เลือก");return}
+  if(!c?.url){alert("ตอนนี้ยังไม่มีไฟล์ PDF สำหรับอ่าน");return}
+
+  const token=++pdfLoadToken;
+  state.reader={book:b,chapterIndex:index,chapter:c};
+  state.currentPage=1;
+  state.view="read";
+  state.cachedPages={};
+  state.pdf=null;
+  state.zoom=1;state.panX=0;state.panY=0;state._handShown=false;
+
+  showProgressOverlay(`กำลังโหลด "${c.name||c.fileName||""}"...`);
+
+  try{
+    const pdf=await openPdf(c.url,token,pct=>{
+      if(token!==pdfLoadToken)return;
+      updateProgressOverlay(pct, `กำลังโหลดไฟล์ PDF... (${Math.round(pct)}%)`);
+    });
+    if(token!==pdfLoadToken || !state.reader){hideProgressOverlay();return}
+
+    state.pdf=pdf;
+    updateProgressOverlay(100,"กำลังแสดงผลหน้าแรก...");
+    // แสดงหน้าคู่แรกทันที ไม่รอ cache 10 หน้า
+    if(token!==pdfLoadToken || !state.reader){hideProgressOverlay();return}
+    render();
+    hideProgressOverlay();
+    showHandHint("แตะ/ลากที่หน้ากระดาษ • กด + หรือบีบนิ้วเพื่อขยาย แล้วลากเพื่อเลื่อนดู");
+    // ค่อย cache หน้าอื่นเบื้องหลัง
+    cachePdfPages(pdf,token).catch(e=>console.warn("background PDF cache:",e));
+  }catch(e){
+    hideProgressOverlay();
+    if(token!==pdfLoadToken)return;
+    console.error("startReader/openPdf:",e);
+    state.reader=null;
+    state.pdf=null;
+    state.cachedPages={};
+    render();
+    alert("เปิด PDF ไม่สำเร็จ: "+friendlyError(e));
+  }
+};
+
+async function openPdf(url,token,onProgress){
+  const pdfjs=await pdfjsReady;
+  if(token!==pdfLoadToken)throw new Error("การโหลด PDF ถูกยกเลิก");
+
+  pdfjs.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.worker.min.mjs";
+  const loadingTask=pdfjs.getDocument(url);
+  if(onProgress){
+    loadingTask.onProgress=p=>{
+      if(token!==pdfLoadToken)return;
+      if(p && p.total)onProgress(p.loaded/p.total*100);
+    };
+  }
+  const pdf=await loadingTask.promise;
+
+  if(token!==pdfLoadToken){
+    try{pdf.cleanup?.()}catch(_){}
+    throw new Error("การโหลด PDF ถูกยกเลิก");
+  }
+  return pdf;
+}
+
+async function cachePdfPages(pdf,token){
+  for(let i=1;i<=Math.min(pdf.numPages,10);i++){
+    if(token!==pdfLoadToken || !state.reader)return;
+
+    const page=await pdf.getPage(i);
+    if(token!==pdfLoadToken || !state.reader)return;
+
+    const viewport=page.getViewport({scale:1.4});
+    const canvas=document.createElement("canvas");
+    canvas.width=viewport.width;
+    canvas.height=viewport.height;
+
+    await page.render({
+      canvasContext:canvas.getContext("2d"),
+      viewport
+    }).promise;
+
+    if(token!==pdfLoadToken || !state.reader)return;
+    state.cachedPages[i]=canvas;
+  }
+}
+
+function renderReader(){
+  if(!state.reader||!state.pdf)return;
+  const foldClass = state.deviceMode === "fold" ? "device-fold" : "";
+  const barClass = state.barVisible ? "" : "hidden-bar";
+  document.body.innerHTML=`<div class="reader">
+    <button class="pageNav prev" aria-label="หน้าก่อนหน้า" onclick="prevPage()">‹</button>
+    <button class="pageNav next" aria-label="หน้าถัดไป" onclick="nextPage()">›</button>
+    <div class="readerbook">
+    <div id="pdfstage" class="pdfstage single ${foldClass}"></div>
+    <div class="readerHint" style="opacity:${state.barVisible?'0':'1'}">แตะที่หน้าจอเพื่อแสดงแถบเมนู</div>
+    <div class="readerbar ${barClass}">
+      <button type="button" class="btn small" data-action="close-reader">← กลับชั้นหนังสือ</button>
+      <button class="btn small" onclick="prevPage()">‹</button>
+      <button class="btn small" onclick="nextPage()">›</button>
+      <span>หน้า <input id="pageInput" style="width:50px;text-align:center;" value="${state.currentPage}" onchange="gotoPage(this.value)"> / ${state.pdf.numPages}</span>
+      <select id="viewMode" onchange="changeView(this.value)">
+        <option value="single">หน้าเดียว</option>
+        <option value="double" selected>2 หน้า (หนังสือ)</option>
+      </select>
+      <select id="deviceSelect" onchange="changeDevice(this.value)">
+        <option value="pc" ${state.deviceMode==="pc"?"selected":""}>🖥️ คอมพิวเตอร์</option>
+        <option value="fold" ${state.deviceMode==="fold"?"selected":""}>📱 มือถือ / Z Fold</option>
+      </select>
+      <select id="flipMode" onchange="state.flipAnim=this.value">
+        <option value="turn">พลิกเปิดหนังสือ</option>
+        <option value="bottom">พลิกด้านล่าง (ปัดขึ้น/ลง)</option>
+      </select>
+      <label>ความเร็ว <input id="speed" type="range" min="100" max="800" value="300" style="width:70px;vertical-align:middle;"></label>
+      <button class="btn small" onclick="addBookmark()">🔖 คั่น</button>
+      <button class="btn small" onclick="showBookmarks()">ไปที่คั่น</button>
+      <button class="btn small" id="fullscreenBtn" onclick="toggleReaderFullscreen()">⛶ เต็มหน้าจอ</button>
+      <div class="zoomControls">
+        <button type="button" title="ย่อ" onclick="zoomOut()">−</button>
+        <span class="zlabel" id="zoomLabel">${Math.round(state.zoom*100)}%</span>
+        <button type="button" title="ขยาย" onclick="zoomIn()">+</button>
+        <button type="button" title="รีเซ็ตขนาด" onclick="zoomReset()" style="width:auto;padding:0 8px;">⟲</button>
+      </div>
+      <button class="btn small" id="soundBtn" onclick="toggleSound()">${state.soundOn?"🔊 เสียงพลิกหน้า":"🔇 ปิดเสียง"}</button>
+      <div class="spacer"></div>
+      <span style="font-size:13px;opacity:0.85">${esc(state.reader.book.title)}</span>
+    </div>
+  </div>`;
+  renderPages();
+  setupTouchEvents();
+  applyZoomStyle(false);
+}
+
+window.changeView=v=>{
+  const stage=$("#pdfstage");
+  if(stage) stage.className = "pdfstage " + (v==="double"?"double":"single") + (state.deviceMode==="fold"?" device-fold":"");
+  renderPages();
+};
+
+window.changeDevice=mode=>{
+  state.deviceMode = mode;
+  const stage=$("#pdfstage");
+  const isDouble = $("#viewMode")?.value === "double";
+  if(stage) stage.className = "pdfstage " + (isDouble?"double":"single") + (mode==="fold"?" device-fold":"");
+  renderPages();
+};
+
+window.renderPages=async()=>{
+  const stage=$("#pdfstage");
+  const pdf=state.pdf;
+  if(!stage || !pdf || !state.reader)return;
+
+  stage.classList.remove("turning", "turning-next", "turning-prev");
+  stage.innerHTML="";
+  const mode=$("#viewMode")?.value||"double";
+  // โหมดหนังสือ: หน้า 1-2, 3-4, 5-6 ... เป็นหน้าคู่ติดกัน
+  const pages=mode==="double"
+    ? [state.currentPage % 2 === 0 ? state.currentPage-1 : state.currentPage, state.currentPage % 2 === 0 ? state.currentPage : state.currentPage+1]
+    : [state.currentPage];
+
+  const rendered=await Promise.all(pages.map(async p=>{
+    if(!state.reader || state.pdf!==pdf || p<1 || p>pdf.numPages)return null;
+    if(state.cachedPages[p])return state.cachedPages[p];
+
+    const page=await pdf.getPage(p);
+    if(!state.reader || state.pdf!==pdf)return null;
+    const viewport=page.getViewport({scale:1.4});
+    const canvas=document.createElement("canvas");
+    canvas.width=viewport.width;
+    canvas.height=viewport.height;
+    await page.render({canvasContext:canvas.getContext("2d"),viewport}).promise;
+    if(!state.reader || state.pdf!==pdf)return null;
+    state.cachedPages[p]=canvas;
+    return canvas;
+  }));
+
+  if(!state.reader || state.pdf!==pdf)return;
+  rendered.forEach((canvas,index)=>{
+    if(!canvas)return;
+    const wrap=document.createElement("div");
+    wrap.className="pagewrap " + (mode==="double" ? (index===0?"spread-left":"spread-right") : "");
+    // ใช้ canvas เดิม ไม่ clone เพราะ cloneNode ไม่คัดลอกพิกเซลของ canvas
+    wrap.appendChild(canvas);
+    stage.appendChild(wrap);
+  });
+};
+
+function applyAnimationStyles(element, phase){
+  const anim = state.flipAnim;
+  const speed = Number($("#speed")?.value||300);
+  element.style.transition = `transform ${speed}ms cubic-bezier(0.25, 1, 0.5, 1), opacity ${speed}ms ease`;
+  if(phase === "in"){
+    if(anim === "bottom"){
+      element.style.transform = "translateY(60px) scale(0.98)";
+      element.style.opacity = "0";
+    } else {
+      element.style.transform = "rotateY(-45deg) scale(0.95)";
+      element.style.opacity = "0";
+    }
+    requestAnimationFrame(()=>{
+      element.style.transform = "translateY(0) rotateY(0deg) scale(1)";
+      element.style.opacity = "1";
+    });
+  }
+}
+
+window.gotoPage=p=>{
+  if(!state.pdf || !state.reader)return;
+  p=Math.max(1,Math.min(state.pdf.numPages,Number(p)||1));
+  state.currentPage=p;
+  renderPages();
+  saveProgress();
+};
+
+async function turnBook(direction){
+  if(!state.pdf || !state.reader)return;
+  const mode=$("#viewMode")?.value||"double";
+  const step=mode==="double"?2:1;
+  const target=state.currentPage + direction*step;
+  if(target<1 || target>state.pdf.numPages)return;
+
+  const stage=$("#pdfstage");
+  const speed=Math.min(420,Math.max(180,Number($("#speed")?.value||300)));
+  if(mode==="double" && stage){
+    stage.classList.remove("turning-next","turning-prev");
+    void stage.offsetWidth;
+    stage.classList.add(direction>0?"turning-next":"turning-prev");
+    await new Promise(r=>setTimeout(r,speed));
+  }
+  state.currentPage=target;
+  saveProgress();
+  playPageTurnSound();
+  await renderPages();
+}
+window.prevPage=()=>turnBook(-1);
+window.nextPage=()=>turnBook(1);
+
+function clampPan(){
+  const st=$("#pdfstage");if(!st)return;const z=state.zoom;
+  if(z<=1){state.panX=0;state.panY=0;return}
+  const mx=Math.max(0,(st.offsetWidth*z-window.innerWidth)/2)+60,my=Math.max(0,(st.offsetHeight*z-window.innerHeight)/2)+60;
+  state.panX=Math.max(-mx,Math.min(mx,state.panX));state.panY=Math.max(-my,Math.min(my,state.panY));
+}
+function showHandHint(text){
+  $("#handHint")?.remove();const d=document.createElement("div");d.id="handHint";
+  d.innerHTML=`<span class="h">🖐️</span>${esc(text)}`;document.body.appendChild(d);setTimeout(()=>d.remove(),3200);
+}
+function applyZoomStyle(animate){
+  const stage=$("#pdfstage");if(!stage)return;
+  clampPan();
+  stage.classList.toggle("zooming",!animate);
+  stage.classList.toggle("pannable",state.zoom>1.01);
+  stage.style.transform=`translate(${state.panX}px,${state.panY}px) scale(${state.zoom})`;
+  const label=$("#zoomLabel");if(label)label.textContent=Math.round(state.zoom*100)+"%";
+  const book=$(".readerbook");if(book)book.style.overflow="hidden";
+  if(state.zoom>1.01&&!state._handShown){state._handShown=true;showHandHint("ลากเพื่อเลื่อนดูตำแหน่งต่างๆ ในหน้าหนังสือ")}
+  if(state.zoom<=1.01)state._handShown=false;
+}
+// รูปมือ 🖐️/✊ ตามเมาส์ และลากเพื่อเลื่อนหน้าที่ขยายอยู่ (เมาส์)
+(function(){
+  let drag=false,moved=0,lx=0,ly=0,suppress=false;
+  const okTarget=t=>t.closest?.("#pdfstage,.readerbook")&&!t.closest(".readerbar,.pageNav");
+  document.addEventListener("mousemove",e=>{
+    if(drag){const dx=e.clientX-lx,dy=e.clientY-ly;moved+=Math.abs(dx)+Math.abs(dy);state.panX+=dx;state.panY+=dy;lx=e.clientX;ly=e.clientY;applyZoomStyle(false)}
+    let c=$("#handCursor");
+    if(state.reader&&state.zoom>1.01&&okTarget(e.target)){
+      if(!c){c=document.createElement("div");c.id="handCursor";document.body.appendChild(c)}
+      c.style.display="block";c.style.left=e.clientX+"px";c.style.top=e.clientY+"px";c.textContent=drag?"✊":"🖐️";
+    }else if(c)c.style.display="none";
+  });
+  document.addEventListener("mousedown",e=>{if(state.reader&&state.zoom>1.01&&okTarget(e.target)){drag=true;moved=0;lx=e.clientX;ly=e.clientY;e.preventDefault()}});
+  document.addEventListener("mouseup",()=>{if(drag&&moved>4)suppress=true;drag=false});
+  document.addEventListener("click",e=>{if(suppress){e.stopPropagation();e.preventDefault();suppress=false}},true);
+})();
+
+window.zoomIn=()=>{
+  state.zoom=Math.min(state.maxZoom,+(state.zoom+0.25).toFixed(2));
+  applyZoomStyle(true);
+};
+window.zoomOut=()=>{
+  state.zoom=Math.max(state.minZoom,+(state.zoom-0.25).toFixed(2));
+  applyZoomStyle(true);
+};
+window.zoomReset=()=>{
+  state.zoom=1;state.panX=0;state.panY=0;
+  applyZoomStyle(true);
+};
+window.toggleSound=()=>{
+  state.soundOn=!state.soundOn;
+  const btn=$("#soundBtn");
+  if(btn)btn.textContent=state.soundOn?"🔊 เสียงพลิกหน้า":"🔇 ปิดเสียง";
+};
+
+window.toggleReaderFullscreen=async()=>{
+  const reader=document.querySelector(".reader");
+  if(!reader)return;
+  try{
+    if(!document.fullscreenElement){
+      await reader.requestFullscreen();
+      state.barVisible=false;
+    }else{
+      await document.exitFullscreen();
+      state.barVisible=true;
+    }
+    const bar=$(".readerbar"),hint=$(".readerHint");
+    if(bar)bar.classList.toggle("hidden-bar",!state.barVisible);
+    if(hint)hint.style.opacity=state.barVisible?"0":"1";
+    const btn=$("#fullscreenBtn");
+    if(btn)btn.textContent=document.fullscreenElement?"⛶ ออกจากเต็มหน้าจอ":"⛶ เต็มหน้าจอ";
+  }catch(err){
+    console.warn("Fullscreen unavailable",err);
+  }
+};
+
+document.addEventListener("fullscreenchange",()=>{
+  const bar=$(".readerbar"),hint=$(".readerHint"),btn=$("#fullscreenBtn");
+  if(document.fullscreenElement){
+    state.barVisible=false;
+  }else{
+    state.barVisible=true;
+  }
+  if(bar)bar.classList.toggle("hidden-bar",!state.barVisible);
+  if(hint)hint.style.opacity=state.barVisible?"0":"1";
+  if(btn)btn.textContent=document.fullscreenElement?"⛶ ออกจากเต็มหน้าจอ":"⛶ เต็มหน้าจอ";
+});
+
+window.addBookmark=()=>{
+  const key=`${state.reader.book.id}_${state.reader.chapterIndex}`;
+  state.bookmarks[key]=state.currentPage;
+  localStorage.setItem("comicBookmarks",JSON.stringify(state.bookmarks));
+  alert("บันทึกที่คั่นหน้าแล้ว");
+};
+
+window.showBookmarks=()=>{
+  const key=`${state.reader.book.id}_${state.reader.chapterIndex}`,p=state.bookmarks[key];
+  if(p)gotoPage(p);else alert("ยังไม่มีที่คั่นสำหรับตอนนี้");
+};
+
+function saveProgress(){
+  localStorage.setItem(`comicProgress_${state.reader.book.id}_${state.reader.chapterIndex}`,String(state.currentPage));
+}
+
+function touchDist(t1,t2){
+  const dx=t1.clientX-t2.clientX, dy=t1.clientY-t2.clientY;
+  return Math.sqrt(dx*dx+dy*dy);
+}
+
+function setupTouchEvents(){
+  const stage = $("#pdfstage");
+  if(!stage) return;
+
+  stage.addEventListener("touchstart", e=>{
+    if(e.touches.length === 2){
+      // เริ่มท่าทางบีบนิ้ว (pinch) เพื่อขยาย/ย่อ
+      state.pinchActive = true;
+      state.pinchStartDist = touchDist(e.touches[0], e.touches[1]);
+      state.pinchStartZoom = state.zoom;
+    } else if(e.touches.length === 1){
+      state.pinchActive = false;
+      state.touchStartX = e.touches[0].clientX;state.panStartX=e.touches[0].clientX;state.panStartY=e.touches[0].clientY;
+      state.touchStartY = e.touches[0].clientY;
+    }
+  }, {passive: true});
+
+  stage.addEventListener("touchmove", e=>{
+    if(e.touches.length === 2 && state.pinchActive){
+      e.preventDefault(); // กันไม่ให้เบราว์เซอร์ซูมทั้งหน้าเว็บแทน
+      const d = touchDist(e.touches[0], e.touches[1]);
+      if(state.pinchStartDist > 0){
+        const ratio = d / state.pinchStartDist;
+        let z = state.pinchStartZoom * ratio;
+        z = Math.max(state.minZoom, Math.min(state.maxZoom, z));
+        state.zoom = +z.toFixed(2);
+        applyZoomStyle(false);
+      }
+    } else if(e.touches.length === 1 && state.zoom > 1.01 && !state.pinchActive){
+      e.preventDefault();
+      const t=e.touches[0];
+      state.panX+=t.clientX-state.panStartX;state.panY+=t.clientY-state.panStartY;
+      state.panStartX=t.clientX;state.panStartY=t.clientY;
+      applyZoomStyle(false);
+    }
+  }, {passive: false});
+
+  stage.addEventListener("touchend", e=>{
+    if(e.touches.length < 2 && state.pinchActive){
+      state.pinchActive = false;
+      applyZoomStyle(true);
+      return;
+    }
+    if(state.pinchActive) return;
+    if(state.zoom > 1.01) { state.touchStartX=0; state.touchStartY=0; return; } // ซูมอยู่: ให้ปัดหน้าจอเพื่อเลื่อนดูแทนการพลิกหน้า
+    if(!state.touchStartX || !state.touchStartY) return;
+    const diffX = e.changedTouches[0].clientX - state.touchStartX;
+    const diffY = e.changedTouches[0].clientY - state.touchStartY;
+    
+    if(Math.abs(diffX) > Math.abs(diffY)){
+      if(diffX > 50) prevPage();
+      else if(diffX < -50) nextPage();
+    } else {
+      if(state.flipAnim === "bottom"){
+        if(diffY > 50) prevPage();
+        else if(diffY < -50) nextPage();
+      }
+    }
+    state.touchStartX = 0;
+    state.touchStartY = 0;
+  }, {passive: true});
+}
+
+document.addEventListener("keydown",e=>{
+  if(!state.pdf)return;
+  if(e.key==="ArrowRight")nextPage();
+  if(e.key==="ArrowLeft")prevPage();
+  if(e.key==="Home")gotoPage(1);
+  if(e.key==="End")gotoPage(state.pdf.numPages);
+  if(e.key==="+"||e.key==="=")zoomIn();
+  if(e.key==="-"||e.key==="_")zoomOut();
+  if(e.key==="0")zoomReset();
+});
+
+// จัดการคลิกบนหน้าจอตัวอ่านหนังสือโดยแยกออกจากปุ่มอย่างเด็ดขาด
+window.addEventListener("click", e => {
+  if(!state.reader) return;
+  const stage = $("#pdfstage");
+  if (!stage) return;
+  
+  if (e.target.closest(".readerbar") || e.target.closest("button") || e.target.closest("select") || e.target.closest("input") || e.target.closest(".modal")) return;
+
+  const rect = stage.getBoundingClientRect(), x = e.clientX - rect.left;
+  
+  if (!state.barVisible) {
+    state.barVisible = true;
+    const bar = $(".readerbar");
+    const hint = $(".readerHint");
+    if (bar) bar.classList.remove("hidden-bar");
+    if (hint) hint.style.opacity = "0";
+    return;
+  }
+
+  if (x < rect.width * 0.25) {
+    prevPage();
+  } else if (x > rect.width * 0.75) {
+    nextPage();
+  } else {
+    state.barVisible = !state.barVisible;
+    const bar = $(".readerbar");
+    const hint = $(".readerHint");
+    if (bar) bar.classList.toggle("hidden-bar", !state.barVisible);
+    if (hint) hint.style.opacity = state.barVisible ? "0" : "1";
+  }
+});
+
+async function init(){
+ if(!configured){state.user={id:"demo"};state.admin=true;state.books=[];render();return}
+ const {data:{session}}=await supabase.auth.getSession();
+ state.user=session?.user||null;
+ state.admin=state.user?await getAdmin(state.user):false;
+ await refreshBooks();
+ supabase.auth.onAuthStateChange(async(event,session)=>{
+  if(event!=="SIGNED_IN"&&event!=="SIGNED_OUT")return;
+  const u=session?.user||null;
+  if(u?.id===state.user?.id)return;
+  state.user=u;state.admin=u?await getAdmin(u):false;
+  state.view=state.admin?"manage":"read";
+  await refreshBooks();
+ });
+}
+init();
+</script>
+</body>
+</html>
