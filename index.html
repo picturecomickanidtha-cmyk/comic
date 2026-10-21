@@ -205,7 +205,7 @@ async function uploadFileResumable(bucket,path,file,onProgress){
       endpoint:TUS_ENDPOINT,
       retryDelays:[0,3000,5000,10000,20000],
       headers:{
-        authorization:`Bearer ${session?.access_token||""}`,
+        authorization:`Bearer ${session?.access_token||SUPABASE_ANON_KEY}`,
         apikey:SUPABASE_ANON_KEY,
         "x-upsert":"false"
       },
@@ -243,9 +243,9 @@ function shell(content){
    <a class="logo" href="#" onclick="setView('read');return false"><span class="mark">📚</span>Comic Library</a>
    <nav class="links">
     <a href="#" class="${v==="read"?"on":""}" onclick="setView('read');return false">📖 ชั้นหนังสือ</a>
-    ${state.admin?`<a href="#" class="${v==="manage"?"on":""}" onclick="setView('manage');return false">⚙️ จัดการหนังสือ</a>`:""}
+    <a href="#" class="${v==="manage"?"on":""}" onclick="setView('manage');return false">⚙️ จัดการหนังสือ</a>
    </nav>
-   ${!configured?"":state.user?`<button class="btn small" onclick="logout()">👋 ออกจากระบบ</button>`:`<button class="btn small dark" onclick="setView('login')">🔑 ผู้ดูแลเข้าสู่ระบบ</button>`}
+   <span class="meta">โหมดจัดการโดยไม่ใช้รหัสผ่าน</span>
   </div></header>${content}<footer class="site-foot">🌈 © Comic Library · คลังการ์ตูนออนไลน์เพื่อการเรียนรู้ 🎉</footer>`;
 }
 window.setView=v=>{state.view=v;state.selectedBook=null;render()};
@@ -314,8 +314,7 @@ function managePage(){
 function render(){
   if(state.reader){renderReader();return}
   let c;
-  if(state.view==="login"&&!state.user)c=loginPage();
-  else if(state.view==="manage"&&state.admin)c=managePage();
+  if(state.view==="manage")c=managePage();
   else{state.view="read";c=readPage()}
   shell(c);
 }
@@ -392,15 +391,13 @@ window.saveBook=async id=>{
  const btn=$("#saveBookBtn"),title=$("#bookTitle").value.trim();
  if(!title)return alert("กรุณาระบุชื่อเรื่อง");
  if(!configured)return alert("ยังไม่ได้เชื่อม Supabase กรุณาใส่ SUPABASE_URL และ SUPABASE_ANON_KEY ใน index.html");
- if(!state.user)return alert("กรุณาเข้าสู่ระบบก่อน");
- if(!state.admin)return alert("บัญชีนี้ยังไม่มีสิทธิ์ admin ในตาราง profiles");
  const b=state.books.find(x=>x.id===id),file=$("#cover").files?.[0];let coverUrl=b?.cover_url||"";
  try{
    btn.classList.add("saving");btn.textContent="⏳ กำลังบันทึก...";
    if(file){
      if(file.size>5*1024*1024)throw new Error("ไฟล์หน้าปกใหญ่เกิน 5 MB");
      if(!/^image\/(png|jpe?g|webp)$/i.test(file.type))throw new Error("กรุณาเลือก JPG, PNG หรือ WebP");
-     const path=`${state.user.id}/${crypto.randomUUID()}_${safeName(file.name)}`;
+     const path=`public/${crypto.randomUUID()}_${safeName(file.name)}`;
      const {error:upErr}=await supabase.storage.from("covers").upload(path,file,{contentType:file.type,upsert:false});
      if(upErr)throw upErr;
      coverUrl=publicUrl("covers",path);
@@ -408,7 +405,7 @@ window.saveBook=async id=>{
    const data={title,chapter_count:Number($("#bookCount").value||0),cover_url:coverUrl,updated_at:new Date().toISOString()};
    let error;
    if(id){({error}=await supabase.from("books").update(data).eq("id",id))}
-   else {({error}=await supabase.from("books").insert({...data,chapters:[],created_by:state.user.id}))}
+   else {({error}=await supabase.from("books").insert({...data,chapters:[],created_by:null}))}
    if(error)throw error;
    $("#modal").remove();await refreshBooks();
  }catch(e){console.error("saveBook:",e);alert("บันทึกไม่สำเร็จ\n\n"+friendlyError(e))}
@@ -435,7 +432,7 @@ window.uploadChapters=async id=>{
    for(let i=0;i<files.length;i++){
      const file=files[i];
      if(file.type!=="application/pdf")throw new Error(`${file.name} ไม่ใช่ PDF`);
-     const path=`${state.user.id}/${id}/${crypto.randomUUID()}_${safeName(file.name)}`;
+     const path=`public/${id}/${crypto.randomUUID()}_${safeName(file.name)}`;
      updateProgressOverlay((i/files.length)*100, `กำลังอัปโหลดไฟล์ ${i+1}/${files.length}: ${file.name}`);
      await uploadFileResumable("pdfs",path,file,pct=>{
        const overall=((i+pct/100)/files.length)*100;
@@ -918,19 +915,11 @@ window.addEventListener("click", e => {
 });
 
 async function init(){
- if(!configured){state.user={id:"demo"};state.admin=true;state.books=[];render();return}
- const {data:{session}}=await supabase.auth.getSession();
- state.user=session?.user||null;
- state.admin=state.user?await getAdmin(state.user):false;
+ state.user={id:"public"};
+ state.admin=true;
+ if(!configured){state.books=[];render();return}
  await refreshBooks();
- supabase.auth.onAuthStateChange(async(event,session)=>{
-  if(event!=="SIGNED_IN"&&event!=="SIGNED_OUT")return;
-  const u=session?.user||null;
-  if(u?.id===state.user?.id)return;
-  state.user=u;state.admin=u?await getAdmin(u):false;
-  state.view=state.admin?"manage":"read";
-  await refreshBooks();
- });
+ render();
 }
 init();
 </script>
